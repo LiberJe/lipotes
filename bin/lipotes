@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+require('commander')
+  .version(require('../package').version)
+  .usage('<command> [options]')
+  .command('login', 'Registered remote server:')
+  .command('push', 'Deploying local file to a remote server')
+  .parse(process.argv)

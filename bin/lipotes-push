@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+console.log('push command')
+
+const deploy = require('../src/deploy')
+
+deploy()
+
+
