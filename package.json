@@ -26,7 +26,9 @@
   "dependencies": {
     "chalk": "^2.3.1",
     "commander": "^2.12.2",
-    "ssh2": "^0.5.5",
+    "inquirer": "^5.1.0",
+    "ora": "^2.0.0",
+    "scp2": "^0.5.0",
     "user-home": "^2.0.0",
     "util": "^0.10.3"
   },

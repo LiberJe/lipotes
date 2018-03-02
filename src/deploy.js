@@ -1,45 +1,29 @@
 
 const fs = require('fs')
-const logger = require('./logger')
-const Client = require('ssh2').Client
+const client = require('scp2')
 const userHome = require('user-home')
+const ora = require('ora')
 
-function deploy (config) {
-  let connection = new Client()
+const logger = require('./logger')
+const { existanceCheck } = require('./utils')
 
-  connection.on('ready', () => {
-    logger.success('Client :: ready')
+function deploy(config) {
+  existanceCheck(['host', 'user', 'pwd', 'localpath', 'targetpath'])(config)
+    ? undefined
+    : logger.fatal('Config Parameter deletion!! Please confirm that you have registered. \n')
 
-    connection.exec('uptime', (err, stream) => {
-      if (err) {
-        logger.fatal(err)
-      }
-      stream
-        .on('close', (code, signal) => {
-          logger.log('Stream :: close :: code: ' + code + ', signal: ' + signal)
-          connection.end()
-        })
-        .on('data', data => {
-          logger.log('STDOUT: ' + data)
-        })
-        .stderr.on('data', data => {
-          logger.fatal(`STDERR: ${data}`)
-        })
-    })
+  const spinner = ora('deploying the payload')
+  spinner.start()
+  client.scp(config.localpath, {
+    host: config.host,
+    username: config.user,
+    password: config.pwd,
+    path: config.targetpath
+  }, err => {
+    spinner.stop()
+    if (err) logger.fatal(`${err} \n`)
+    logger.success(`Payload was deployed successfully!! \n`)
   })
-  // fs.readFile(`${userHome}/.ssh/id_rsa`, (err, data) => {
-  //   console.log(data)
-    // if (err) {
-    //   console.log(err)
-    // } else {
-    //   exec('ls -lh', {
-    //     user: 'root',
-    //     host: '47.104.67.150',
-    //     key: data,
-    //     password: '1995815@jly'
-    //   }).pipe(process.stdout)
-    // }
-  // })
 }
 
 module.exports = deploy

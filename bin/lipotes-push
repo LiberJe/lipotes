@@ -1,9 +1,38 @@
 #!/usr/bin/env node
 
-console.log('push command')
-
+const program = require('commander')
+const logger = require('../src/logger')
 const deploy = require('../src/deploy')
 
-deploy()
+/**
+ * Usage.
+ */
+program
+  .usage('<localpath> [remotepath]')
+
+/**
+ * Help.
+ */
+function help () {
+  program.parse(process.argv)
+  if (program.args.length < 1) return program.help()
+}
+help()
+
+/**
+ * Settings.
+ */
+let localpath = program.args[0]
+let targetpath = program.args[1]
+
+
+deploy({
+  host: '47.104.67.150',
+  port: 22,
+  user: 'root',
+  pwd: '1995815@jly',
+  localpath,
+  targetpath,
+})
 
 
